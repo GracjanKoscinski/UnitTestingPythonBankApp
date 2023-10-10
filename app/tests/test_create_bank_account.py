@@ -20,4 +20,16 @@ class TestCreateBankAccount(unittest.TestCase):
     def test_tworzenie_konta_z_dlugim_peselem(self):
         konto = Konto(self.imie, self.nazwisko, "123453333678")
         self.assertEqual(konto.pesel,"Niepoprawny pesel!", "wartosc nie zostala zapisana")
+
+    def test_tworzenie_konta_z_poprawnym_kodem_promocyjnym(self):
+        konto = Konto(self.imie, self.nazwisko, self.pesel, "PROM_XYZ")
+        self.assertEqual(konto.saldo, 50, "kod nie zostal zaakceptowany!")
+    
+    def test_tworzenie_konta_z_niepoprawnym_kodem_promocyjnym(self):
+        konto = Konto(self.imie, self.nazwisko, self.pesel, "PROM_12345")
+        self.assertEqual(konto.saldo, 0, "kod zostal zaakceptowany!")
+    
+    def test_tworzenie_konta_z_niepoprawnym_kodem_promocyjnym_preffix(self):
+        konto = Konto(self.imie, self.nazwisko, self.pesel, "TEST_XYZ")
+        self.assertEqual(konto.saldo, 0, "kod zostal zaakceptowany!")
     #tutaj proszę dodawać nowe testy
