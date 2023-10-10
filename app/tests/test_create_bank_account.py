@@ -12,7 +12,12 @@ class TestCreateBankAccount(unittest.TestCase):
         self.assertEqual(pierwsze_konto.nazwisko,self.nazwisko, "Nazwisko nie zostało zapisane!")
         self.assertEqual(pierwsze_konto.saldo, 0, "Saldo nie jest zerowe!")
         self.assertEqual(pierwsze_konto.pesel, self.pesel,"Pesel nie został zapisany!")
-    
         
-
+    def test_tworzenie_konta_z_krotkim_peselem(self):
+        konto = Konto(self.imie, self.nazwisko, "12345678")
+        self.assertEqual(konto.pesel,"Niepoprawny pesel!", "wartosc nie zostala zapisana")
+    
+    def test_tworzenie_konta_z_dlugim_peselem(self):
+        konto = Konto(self.imie, self.nazwisko, "123453333678")
+        self.assertEqual(konto.pesel,"Niepoprawny pesel!", "wartosc nie zostala zapisana")
     #tutaj proszę dodawać nowe testy
