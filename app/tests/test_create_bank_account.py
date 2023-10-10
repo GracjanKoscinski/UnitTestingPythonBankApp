@@ -32,4 +32,15 @@ class TestCreateBankAccount(unittest.TestCase):
     def test_tworzenie_konta_z_niepoprawnym_kodem_promocyjnym_preffix(self):
         konto = Konto(self.imie, self.nazwisko, self.pesel, "TEST_XYZ")
         self.assertEqual(konto.saldo, 0, "kod zostal zaakceptowany!")
+    
+    def test_osoba_urodzona_w_1970(self):
+    
+    def test_osoba_urodzona_w_2003(self):
+
+    def test_osoba_urodzona_w_1960(self):
+    
+    def test_osoba_zly_pesel(self):
+
+    def test_osoba_urodzona_w_1970_zly_kod(self):
+
     #tutaj proszę dodawać nowe testy
