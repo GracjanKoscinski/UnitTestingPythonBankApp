@@ -27,3 +27,10 @@ class Konto:
             #print("Osoba urodzona między 1960 (nie włącznie) a 2000 rokiem")
         else:
             return False
+    
+    def przelew_wychodzacy(self,kwota):
+        if self.saldo >= kwota and kwota > 0:
+            self.saldo -= kwota
+    def przelew_przychodzacy(self, kwota):
+        if kwota > 0:
+            self.saldo += kwota
