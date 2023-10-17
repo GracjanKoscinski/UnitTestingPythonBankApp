@@ -1,6 +1,7 @@
 import unittest
 
 from ..KontoOsobiste import KontoOsobiste
+from ..KontoFirmowe import KontoFirmowe
 
 class TestBankAccountTransfers(unittest.TestCase):
     #osoba moze zrobic przelew i robi
@@ -9,16 +10,42 @@ class TestBankAccountTransfers(unittest.TestCase):
         konto_1.saldo = 0
         konto_1.przelew_przychodzacy(100)
         self.assertEqual(konto_1.saldo, 100, "saldo niepoprawne!")
+
     def test_przelew_wychodzacy_poprawny(self):
         konto_1 = KontoOsobiste("imie","nazwisko","10000000000")
         konto_1.saldo = 100
         konto_1.przelew_wychodzacy(50)
         self.assertEqual(konto_1.saldo, 50, "saldo niepoprawne!")
+
     def test_przelew_wychodzacy_niepoprwany(self):
         konto_1 = KontoOsobiste("imie","nazwisko","10000000000")
         konto_1.saldo = 100
         konto_1.przelew_wychodzacy(150)
         self.assertEqual(konto_1.saldo, 100, "saldo niepoprawne!")
+
+    def test_przelew_express_osobisty_poprawny(self):
+        konto_1 = KontoOsobiste("imie","nazwisko","10000000000")
+        konto_1.saldo = 100
+        konto_1.przelew_express_wychodzacy(10)
+        self.assertEqual(konto_1.saldo, 89, "saldo niepoprawne!")
+
+    def test_przelew_express_osobisty_niepoprawny(self):
+        konto_1 = KontoOsobiste("imie","nazwisko","10000000000")
+        konto_1.saldo = 100
+        konto_1.przelew_express_wychodzacy(150)
+        self.assertEqual(konto_1.saldo, 100, "saldo niepoprawne!")
+        
+    def test_przelew_express_firmowy_poprawny(self):
+        konto_firmowe = KontoFirmowe("nazwa","1234567891")
+        konto_firmowe.saldo = 10
+        konto_firmowe.przelew_express_wychodzacy(5)
+        self.assertEqual(konto_firmowe.saldo,0,"saldo niepoprawne!")
+    
+    def test_przelew_express_firmowy_niepoprawny(self):
+        konto_firmowe = KontoFirmowe("nazwa","1234567891")
+        konto_firmowe.saldo = 10
+        konto_firmowe.przelew_express_wychodzacy(100)
+        self.assertEqual(konto_firmowe.saldo,10,"saldo niepoprawne!")
     
     
 

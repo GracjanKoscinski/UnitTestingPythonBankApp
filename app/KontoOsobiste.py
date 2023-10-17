@@ -1,6 +1,7 @@
 from .Konto import Konto
 
 class KontoOsobiste(Konto):
+    express_trasnfer_fee = 1
     def __init__(self, imie, nazwisko, pesel, kod_promocyjny=None):
         self.imie = imie
         self.nazwisko = nazwisko
