@@ -36,6 +36,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with unittest and generate coverage report
       run: |
-        python3 -m unittest
         python3 -m coverage run -m unittest
         python3 -m coverage report 
