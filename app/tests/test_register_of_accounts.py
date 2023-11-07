@@ -24,6 +24,18 @@ class TestRegisterOfAccounts(unittest.TestCase):
         RegisterOfAccounts.addToRegister(konto_3)
         self.assertEqual(RegisterOfAccounts.howManyAccounts(),4)
     
+    def test_3_wyszukiwanie_po_pesel(self):
+        konto_4 = KontoOsobiste(self.imie,self.nazwisko,"12345578900")
+        RegisterOfAccounts.addToRegister(konto_4)
+        found = RegisterOfAccounts.searchByPesel("12345578900")
+        self.assertEqual(found,konto_4)
+
+    def test_4_wyszukiwanie_po_pesel_blednie(self):
+        konto_5 = KontoOsobiste(self.imie,self.nazwisko,"12345578900")
+        RegisterOfAccounts.addToRegister(konto_5)
+        found = RegisterOfAccounts.searchByPesel("1234557338900")
+        self.assertEqual(found,None)
+    
     @classmethod
     def tearDownClass(cls):
         RegisterOfAccounts.register = []

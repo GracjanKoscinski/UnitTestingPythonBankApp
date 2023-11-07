@@ -14,4 +14,7 @@ class RegisterOfAccounts:
     
     @classmethod
     def searchByPesel(cls, pesel):
-        ...
+        for konto in cls.register:
+            if konto.pesel==pesel:
+                return konto
+        return None
