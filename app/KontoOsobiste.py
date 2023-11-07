@@ -31,3 +31,15 @@ class KontoOsobiste(Konto):
             #print("Osoba urodzona między 1960 (nie włącznie) a 2000 rokiem")
         else:
             return False
+    
+    def zaciagnij_kredyt(self, kwota_kredytu):
+        if all(element > 0 for element in self.historia[-3:]) and len(self.historia) >= 3:
+            self.saldo += kwota_kredytu
+            return True
+        elif sum(self.historia[-5:]) > kwota_kredytu and len(self.historia) >= 5:
+            self.saldo += kwota_kredytu
+            return True
+        else:
+            return False
+
+        
