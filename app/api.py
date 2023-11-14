@@ -22,16 +22,29 @@ def stworz_konto():
 @app.route("/api/accounts/count", methods=['GET'])
 def ile_kont():
    count = RegisterOfAccounts.howManyAccounts()
-   return jsonify({"count":count})   #Twoja implementacja endpointu
+   return jsonify({"count":count}), 200
 
 
 
 
 @app.route("/api/accounts/<pesel>", methods=['GET'])
 def wyszukaj_konto_z_peselem(pesel):
-   #Twoja implementacja endpointu
    konto = RegisterOfAccounts.searchByPesel(pesel)
-   return jsonify(konto.__dict__), 200
+   if konto != None:
+      return jsonify(konto.__dict__), 200
+   else:
+      return jsonify({"message":"Nie ma konta o takim peselu"}), 404
+
+#delete
+# @app.route("/api/accounts/<pesel>", methods=['DELETE'])
+# def usun_konto(pesel):
+#    konto = RegisterOfAccounts.searchByPesel(pesel)
+#    RegisterOfAccounts.register.remove(konto)
+#    return jsonify({"message":"Usunięto konto"},301)
+   
+
+
+#patch
 
 if __name__ == '__main__':
    app.run(debug=True)
