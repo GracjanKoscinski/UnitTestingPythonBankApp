@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from .RegisterOfAccounts import RegisterOfAccounts
 from .KontoOsobiste import KontoOsobiste
-
+from .Konto import Konto
 app = Flask(__name__)
 
 
@@ -55,6 +55,21 @@ def zmodyfikuj_dane(pesel):
       return jsonify({"message": "Dane konta zaktualizowane"}), 200
    else:
         return jsonify({"message": "Brak konta o takim peselu!"}), 404
+#przelwy
+@app.route("/api/accounts/<pesel>/transfer", methods=['POST'])
+def przelew(pesel):
+   konto = RegisterOfAccounts.searchByPesel(pesel)
+   dane = request.get_json()
+   if konto is None:
+       return jsonify({"message":"Nie znaleziono konta docelowego"}), 404
+   else:
+       if dane["type"] == "incoming":
+          konto.przelew_przychodzacy(dane["amount"])
+          return jsonify({"message":"Zlecenie przyjęto do realizacji"}), 200
+       elif dane["type"] =="outgoing":
+          #dopisz
+
+
 
 if __name__ == '__main__':
    app.run(debug=True)

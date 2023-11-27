@@ -45,3 +45,7 @@ class TestAccountCrud(unittest.TestCase):
     def test_j_create_account(self):
         response = requests.post(self.url, json={"imie":"Michał", "nazwisko":"Kowalski","pesel":"12345678900"})
         self.assertEqual(response.status_code, 409)
+    
+    @classmethod
+    def tearDownClass(cls):
+        requests.delete("http://localhost:5000/api/accounts/12345678900")
