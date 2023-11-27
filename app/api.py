@@ -9,9 +9,14 @@ app = Flask(__name__)
 def stworz_konto():
    dane = request.get_json()
    print(f"Request o stworzenie konta z danymi: {dane}")
-   konto = KontoOsobiste(dane["imie"], dane["nazwisko"], dane["pesel"])
-   RegisterOfAccounts.addToRegister(konto)
-   return jsonify({"message": "Konto stworzone"}), 201
+   # jezeli takiego konta nie ma
+   czyPeselWykorzystany = RegisterOfAccounts.searchByPesel(dane["pesel"])
+   if czyPeselWykorzystany == None:
+      konto = KontoOsobiste(dane["imie"], dane["nazwisko"], dane["pesel"])
+      RegisterOfAccounts.addToRegister(konto)
+      return jsonify({"message": "Konto stworzone"}), 201
+   else:
+      return jsonify({"message": "Ten numer PESEL został już wykorzystany"}), 409
 
 
 @app.route("/api/accounts/count", methods=['GET'])
