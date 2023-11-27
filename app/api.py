@@ -62,12 +62,11 @@ def przelew(pesel):
    dane = request.get_json()
    if konto is None:
        return jsonify({"message":"Nie znaleziono konta docelowego"}), 404
-   else:
-       if dane["type"] == "incoming":
-          konto.przelew_przychodzacy(dane["amount"])
-          return jsonify({"message":"Zlecenie przyjęto do realizacji"}), 200
-       elif dane["type"] =="outgoing":
-          #dopisz
+   if dane["type"] == "incoming":
+      konto.przelew_przychodzacy(dane["amount"])
+   elif dane["type"] =="outgoing":
+      konto.przelew_wychodzacy(dane["amount"])  
+   return jsonify({"message":"Zlecenie przyjęto do realizacji"}), 200
 
 
 

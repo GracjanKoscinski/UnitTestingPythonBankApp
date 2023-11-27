@@ -13,10 +13,10 @@ class TestAccountTransfers(unittest.TestCase):
         requests.delete(self.url + "/" + self.pesel)
     
     def test_incoming_transfer_account_exists(self):
-        konto = requests.get(self.url+"/"+self.pesel).json()
         response = requests.post(self.url+"/"+self.pesel+"/transfer", json={"amount":500,"type":"incoming"})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(konto["saldo"],0)
+        konto = requests.get(self.url+"/"+self.pesel).json()
+        self.assertEqual(konto["saldo"], 500)
     
     def test_incoming_transfer_account_doesnt_exist(self):
         response = requests.post(self.url+"/"+"02311801475"+"/transfer", json={"amount":500,"type":"incoming"})
