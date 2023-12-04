@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from .RegisterOfAccounts import RegisterOfAccounts
 from .KontoOsobiste import KontoOsobiste
-
+from .Konto import Konto
 app = Flask(__name__)
 
 
@@ -9,9 +9,14 @@ app = Flask(__name__)
 def stworz_konto():
    dane = request.get_json()
    print(f"Request o stworzenie konta z danymi: {dane}")
-   konto = KontoOsobiste(dane["imie"], dane["nazwisko"], dane["pesel"])
-   RegisterOfAccounts.addToRegister(konto)
-   return jsonify({"message": "Konto stworzone"}), 201
+   # jezeli takiego konta nie ma
+   czyPeselWykorzystany = RegisterOfAccounts.searchByPesel(dane["pesel"])
+   if czyPeselWykorzystany == None:
+      konto = KontoOsobiste(dane["imie"], dane["nazwisko"], dane["pesel"])
+      RegisterOfAccounts.addToRegister(konto)
+      return jsonify({"message": "Konto stworzone"}), 201
+   else:
+      return jsonify({"message": "Ten numer PESEL został już wykorzystany"}), 409
 
 
 @app.route("/api/accounts/count", methods=['GET'])
@@ -50,6 +55,20 @@ def zmodyfikuj_dane(pesel):
       return jsonify({"message": "Dane konta zaktualizowane"}), 200
    else:
         return jsonify({"message": "Brak konta o takim peselu!"}), 404
+#przelwy
+@app.route("/api/accounts/<pesel>/transfer", methods=['POST'])
+def przelew(pesel):
+   konto = RegisterOfAccounts.searchByPesel(pesel)
+   dane = request.get_json()
+   if konto is None:
+       return jsonify({"message":"Nie znaleziono konta docelowego"}), 404
+   if dane["type"] == "incoming":
+      konto.przelew_przychodzacy(dane["amount"])
+   elif dane["type"] =="outgoing":
+      konto.przelew_wychodzacy(dane["amount"])  
+   return jsonify({"message":"Zlecenie przyjęto do realizacji"}), 200
+
+
 
 if __name__ == '__main__':
    app.run(debug=True)
