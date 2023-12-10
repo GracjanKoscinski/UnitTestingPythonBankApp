@@ -2,6 +2,7 @@ import unittest
 
 from ..KontoOsobiste import KontoOsobiste
 from ..KontoFirmowe import KontoFirmowe
+from unittest.mock import patch
 
 class TestBankAccountTransfersHistory(unittest.TestCase):
 
@@ -21,18 +22,24 @@ class TestBankAccountTransfersHistory(unittest.TestCase):
         konto_1.przelew_express_wychodzacy(100)
         self.assertEqual(konto_1.historia, [-100,-1], "historia niepoprawna!")
     #konto firmowe
-    def test_historia_konto_firma_przychodzacy(self):
-        konto_1 = KontoFirmowe("nazwa","1234567890")
+    @patch('app.KontoFirmowe.KontoFirmowe.czy_w_rejestrze')
+    def test_historia_konto_firma_przychodzacy(self,czy_w_rejestrze):
+        czy_w_rejestrze.return_value = True
+        konto_1 = KontoFirmowe("nazwa","8461627563")
         konto_1.saldo = 100
         konto_1.przelew_przychodzacy(50)
         self.assertEqual(konto_1.historia, [50], "saldo niepoprawne!")
-    def test_historia_konto_firma_wychodzacy(self):
-        konto_1 = KontoFirmowe("nazwa","1234567890")
+    @patch('app.KontoFirmowe.KontoFirmowe.czy_w_rejestrze')
+    def test_historia_konto_firma_wychodzacy(self,czy_w_rejestrze):
+        czy_w_rejestrze.return_value = True
+        konto_1 = KontoFirmowe("nazwa","8461627563")
         konto_1.saldo = 100
         konto_1.przelew_wychodzacy(50)
         self.assertEqual(konto_1.historia, [-50], "saldo niepoprawne!")
-    def test_historia_konto_firma_express(self):
-        konto_1 = KontoFirmowe("nazwa","1234567890")
+    @patch('app.KontoFirmowe.KontoFirmowe.czy_w_rejestrze')
+    def test_historia_konto_firma_express(self,czy_w_rejestrze):
+        czy_w_rejestrze.return_value = True
+        konto_1 = KontoFirmowe("nazwa","8461627563")
         konto_1.saldo = 100
         konto_1.przelew_express_wychodzacy(50)
         self.assertEqual(konto_1.historia, [-50,-5], "saldo niepoprawne!")

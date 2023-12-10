@@ -53,13 +53,13 @@ class TestBankAccountTransfers(unittest.TestCase):
         self.assertEqual(konto_1.saldo, 100, "saldo niepoprawne!")
         
     def test_przelew_express_firmowy_poprawny(self):
-        konto_firmowe = KontoFirmowe("nazwa","1234567891")
+        konto_firmowe = KontoFirmowe("nazwa","8461627563")
         konto_firmowe.saldo = 10
         konto_firmowe.przelew_express_wychodzacy(5)
         self.assertEqual(konto_firmowe.saldo,0,"saldo niepoprawne!")
     
     def test_przelew_express_firmowy_niepoprawny(self):
-        konto_firmowe = KontoFirmowe("nazwa","1234567891")
+        konto_firmowe = KontoFirmowe("nazwa","8461627563")
         konto_firmowe.saldo = 10
         konto_firmowe.przelew_express_wychodzacy(100)
         self.assertEqual(konto_firmowe.saldo,10,"saldo niepoprawne!")
