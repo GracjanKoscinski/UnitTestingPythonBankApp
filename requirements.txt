@@ -1,2 +1,5 @@
-coverage==6.5.0
-parameterized===0.9.0
+Flask==2.0.1
+parameterized==0.9.0
+python-dotenv==1.0.0
+requests==2.31.0
+coverage==7.3.2

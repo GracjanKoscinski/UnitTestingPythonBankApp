@@ -29,9 +29,10 @@ class KontoFirmowe(Konto):
     def czy_w_rejestrze(self, nip):
         today = date.today()
         base_url = os.getenv("url")
-        url = base_url+"/"+str(nip)+"?date="+str(today)
-        response = requests.get(url)
-        print(response.status_code)
-        if response.status_code==200:
-            return True
-        return False
+        if base_url is not None:
+            url = base_url+"/"+str(nip)+"?date="+str(today)
+            response = requests.get(url)
+            print(response.status_code)
+            if response.status_code==200:
+                return True
+            return False
