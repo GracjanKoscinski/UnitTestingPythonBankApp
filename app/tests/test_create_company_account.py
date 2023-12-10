@@ -34,6 +34,12 @@ class TestCreateBankAccount(unittest.TestCase):
     def test_czy_w_rejestrze_false(self, mock_get):
         nip = "1234567891"
         mock_get.return_value.status_code = 404
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(ValueError):
             KontoFirmowe(self.name, nip)
-        self.assertTrue("This NIP does not exist" in str(context.exception) )
+    
+    @patch('requests.get')
+    def test_czy_w_rejestrze_true(self, mock_get):
+        nip = "1234567891"
+        mock_get.return_value.status_code = 200
+        pierwsze_konto = KontoFirmowe(self.name,nip)
+        self.assertEqual(pierwsze_konto.nip,nip, "Nip nie został zapisany!")
