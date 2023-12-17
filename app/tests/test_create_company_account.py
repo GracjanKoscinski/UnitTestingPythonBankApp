@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 class TestCreateBankAccount(unittest.TestCase):
     name = "Firma123"
-
+    
     @patch('app.KontoFirmowe.KontoFirmowe.czy_w_rejestrze')
     def test_tworzenie_konta(self,czy_w_rejestrze):
         czy_w_rejestrze.return_value = True

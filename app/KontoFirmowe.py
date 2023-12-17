@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+
 class KontoFirmowe(Konto):
     express_trasnfer_fee = 5
     def __init__(self, name, nip):
@@ -35,3 +36,10 @@ class KontoFirmowe(Konto):
         if response.status_code==200:
             return True
         return False
+
+    def wyslij_historie_na_maila(self, adresat, SMTPConnection):
+        today = date.today()
+        topic = f"Wyciąg z dnia {str(today)}"
+        content = f"Historia konta Twojej firmy to: {self.historia}"
+        result = SMTPConnection.wyslij(topic, content, adresat)
+        return result

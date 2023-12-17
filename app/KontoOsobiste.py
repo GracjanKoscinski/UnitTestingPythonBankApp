@@ -1,5 +1,5 @@
 from .Konto import Konto
-
+from datetime import date
 class KontoOsobiste(Konto):
     express_trasnfer_fee = 1
     def __init__(self, imie, nazwisko, pesel, kod_promocyjny=None):
@@ -42,4 +42,9 @@ class KontoOsobiste(Konto):
         else:
             return False
 
-        
+    def wyslij_historie_na_maila(self, adresat, SMTPConnection):
+        today = date.today()
+        topic = f"Wyciąg z dnia {str(today)}"
+        content = f"Twoja historia konta to: {self.historia}"
+        result = SMTPConnection.wyslij(topic, content, adresat)
+        return result
