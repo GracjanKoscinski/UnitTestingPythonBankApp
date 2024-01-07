@@ -1,7 +1,7 @@
 import unittest
 from ..KontoOsobiste import KontoOsobiste
 from ..RegisterOfAccounts import RegisterOfAccounts
-
+from unittest.mock import patch
 class TestRegisterOfAccounts(unittest.TestCase):
     imie = "imie"
     nazwisko = "nazwisko"
@@ -9,6 +9,7 @@ class TestRegisterOfAccounts(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        RegisterOfAccounts.register = []
         konto = KontoOsobiste(cls.imie,cls.nazwisko,cls.pesel)
         RegisterOfAccounts.addToRegister(konto)
 
@@ -35,7 +36,54 @@ class TestRegisterOfAccounts(unittest.TestCase):
         RegisterOfAccounts.addToRegister(konto_5)
         found = RegisterOfAccounts.searchByPesel("1234557338900")
         self.assertEqual(found,None)
+
+    @patch('app.RegisterOfAccounts.RegisterOfAccounts.collection')
+    def test_5_zaladuj_konta_z_bazy_danych(self,mock_collection):
+        mock_collection.find.return_value = [{"imie": "imie", "nazwisko": "nazwisko", "pesel": "12345678900", "saldo": 0, "historia": []}]
+        RegisterOfAccounts.loadFromDatabase()
+        self.assertEqual(len(RegisterOfAccounts.register),1)
+        self.assertEqual(RegisterOfAccounts.register[0].imie,"imie")
+        self.assertEqual(RegisterOfAccounts.register[0].nazwisko,"nazwisko")
+        self.assertEqual(RegisterOfAccounts.register[0].pesel,"12345678900")
+        self.assertEqual(RegisterOfAccounts.register[0].saldo,0)
+        self.assertEqual(RegisterOfAccounts.register[0].historia,[])
+
+    @patch('app.RegisterOfAccounts.RegisterOfAccounts.collection')
+    def test_6_czy_ladowanie_z_bazy_czysci_liste(self,mock_collection):
+        mock_collection.find.return_value = [{"imie": "imie", "nazwisko": "nazwisko", "pesel": "12345678900", "saldo": 0, "historia": []}]
+        RegisterOfAccounts.loadFromDatabase()
+        self.assertEqual(len(RegisterOfAccounts.register),1)
+        RegisterOfAccounts.loadFromDatabase()
+        self.assertEqual(len(RegisterOfAccounts.register),1)
     
+    @patch('app.RegisterOfAccounts.RegisterOfAccounts.collection')
+    def test_7_zapisz_konta_do_bazy_danych(self,mock_collection):
+       RegisterOfAccounts.register = []
+       konto = KontoOsobiste(self.imie,self.nazwisko,self.pesel)
+       konto.saldo = 100
+       konto.historia = [1,2,3]
+       RegisterOfAccounts.addToRegister(konto)
+       RegisterOfAccounts.saveToDatabase()
+       mock_collection.delete_many.assert_called_once_with({})
+       mock_collection.insert_one.assert_called_once_with({"imie": konto.imie, "nazwisko": konto.nazwisko, "pesel": konto.pesel, "saldo": konto.saldo, "historia": konto.historia})
+
+    @patch('app.RegisterOfAccounts.RegisterOfAccounts.collection')
+    def test_8_zapisz_wiele_kont_do_bazy(self, mock_collection):
+        konto1 = KontoOsobiste("imie1", "nazwisko1", "pesel1")
+        konto2 = KontoOsobiste("imie2", "nazwisko2", "pesel2")
+        RegisterOfAccounts.addToRegister(konto1)
+        RegisterOfAccounts.addToRegister(konto2)
+        RegisterOfAccounts.saveToDatabase()
+        # 3 ponieważ jedno konto tworzy setUpClass
+        assert mock_collection.insert_one.call_count == 3
+
+    @patch('app.RegisterOfAccounts.RegisterOfAccounts.collection')
+    def test_9_zapisz_do_bazy_gdy_rejestr_pusty(self, mock_collection):
+        RegisterOfAccounts.register = []
+        RegisterOfAccounts.saveToDatabase()
+        mock_collection.delete_many.assert_called_once_with({})
+        assert mock_collection.insert_one.call_count == 0
+
     @classmethod
     def tearDownClass(cls):
         RegisterOfAccounts.register = []

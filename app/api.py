@@ -68,6 +68,15 @@ def przelew(pesel):
       konto.przelew_wychodzacy(dane["amount"])  
    return jsonify({"message":"Zlecenie przyjęto do realizacji"}), 200
 
+@app.patch("/api/accounts/save")
+def save():
+   RegisterOfAccounts.saveToDatabase()
+   return jsonify({"message:": "Zapisano konta do bazy danych"}), 200
+
+@app.patch("/api/accounts/load")
+def load():
+   RegisterOfAccounts.loadFromDatabase()
+   return jsonify({"message:": "Załadowano konta z bazy danych"}), 200
 
 
 if __name__ == '__main__':
