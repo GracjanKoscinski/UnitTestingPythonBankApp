@@ -26,9 +26,14 @@ class RegisterOfAccounts:
     def saveToDatabase(cls):
         cls.collection.delete_many({})
         for konto in cls.register:
-            cls.collection.insert_one({"imie:": konto.imie, "nazwisko": konto.nazwisko, "pesel": konto.pesel, "saldo": konto.saldo, "historia:": konto.historia})
+            cls.collection.insert_one({"imie": konto.imie, "nazwisko": konto.nazwisko, "pesel": konto.pesel, "saldo": konto.saldo, "historia": konto.historia})
     
     @classmethod
     def loadFromDatabase(cls):
-        for konto in cls.collection.find():
-            cls.register.append(KontoOsobiste(konto["imie"], konto["nazwisko"], konto["pesel"], konto["saldo"], konto["historia"]))
+        cls.register = []
+        for konto_dict in cls.collection.find():
+            konto = KontoOsobiste(konto_dict["imie"], konto_dict["nazwisko"], konto_dict["pesel"])
+            konto.saldo = konto_dict["saldo"]
+            konto.historia = konto_dict["historia"]
+            cls.register.append(konto)
+        
