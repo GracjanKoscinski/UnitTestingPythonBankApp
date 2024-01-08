@@ -10,10 +10,8 @@ URL = "http://localhost:5000"
 
 @when('I create an account using imie: {name}, nazwisko: {last_name}, pesel: {pesel}')
 def utworz_konto(context, name, last_name, pesel):
-    json_body = { "imie": f"{name}",
-    "nazwisko": f"{last_name}",
-    "pesel": f"{pesel}"
-    }
+    json_body = { "imie": name.strip('"'), "nazwisko": last_name.strip('"'), "pesel": pesel.strip('"') }
+    print(json_body) 
     create_resp = requests.post(URL + "/api/accounts", json = json_body)
     assert_equal(create_resp.status_code, 201)
 
@@ -32,7 +30,6 @@ def sprawdz_czy_konto_z_pesel_istnieje(context, pesel):
 
 @step('Account with pesel "{pesel}" does not exists in registry')
 def sprawdz_czy_konto_z_pesel_nie_istnieje(context, pesel):
-    #TODO assert czy konto z peselem nie istnieje
     czy_istnieje = requests.get(URL + f"/api/accounts/{pesel}")
     assert_equal(czy_istnieje.status_code, 404)
 
@@ -48,21 +45,23 @@ def zapisz_konta(context):
     assert_equal(resp.status_code, 200)
 
 
+
 @when('I load the account registry')
 def load_rejestr(context):
-    #TODO
-    pass
+    load_resp = requests.patch(URL + "/api/accounts/load")
+    assert_equal(load_resp.status_code, 200)
 
 
-@when('I update last name in account with pesel "{pesel}" to "{last_name}"')
-def update_nazwiska(context, pesel, last_name):
-    #TODO       
-    pass
+@when('I update nazwisko to "{new_last_name}" for account with pesel: "{pesel}"')
+def update_nazwisko(context, new_last_name, pesel):
+    json_body = { "nazwisko": new_last_name.strip('"') }
+    update_resp = requests.patch(URL + f"/api/accounts/{pesel}", json = json_body)
+    assert_equal(update_resp.status_code, 200)
 
 
-@then('Last name in account with pesel "{pesel}" is "{last_name}"')
-def sprawdzenie_nazwiska(context, pesel, last_name):
-    #TODO
-    pass
-
+@then('Account with pesel "{pesel}" has nazwisko "{nazwisko}"')
+def verify_nazwisko(context, pesel, nazwisko):
+    response = requests.get(URL + f"/api/accounts/{pesel}")
+    assert_equal(response.status_code, 200)
+    assert_equal(response.json()["nazwisko"], nazwisko.strip('"'))
 
