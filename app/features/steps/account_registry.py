@@ -8,9 +8,9 @@ assert_equal = AssertEqual()
 URL = "http://localhost:5000"
 
 
-@when('I create an account using imie: {name}, nazwisko: {last_name}, pesel: {pesel}')
+@when('I create an account using imie: "{name}", nazwisko: "{last_name}", pesel: "{pesel}"')
 def utworz_konto(context, name, last_name, pesel):
-    json_body = { "imie": name.strip('"'), "nazwisko": last_name.strip('"'), "pesel": pesel.strip('"') }
+    json_body = { "imie": name, "nazwisko": last_name, "pesel": pesel }
     print(json_body) 
     create_resp = requests.post(URL + "/api/accounts", json = json_body)
     assert_equal(create_resp.status_code, 201)
@@ -25,7 +25,7 @@ def sprawdz_liczbe_kont_w_rejestrze(context, count):
 def sprawdz_czy_konto_z_pesel_istnieje(context, pesel):
     czy_istnieje = requests.get(URL + f"/api/accounts/{pesel}")
     assert_equal(czy_istnieje.status_code, 200)
-    #TODO assert czy konto z peselem istnieje
+   
 
 
 @step('Account with pesel "{pesel}" does not exists in registry')
@@ -54,7 +54,7 @@ def load_rejestr(context):
 
 @when('I update nazwisko to "{new_last_name}" for account with pesel: "{pesel}"')
 def update_nazwisko(context, new_last_name, pesel):
-    json_body = { "nazwisko": new_last_name.strip('"') }
+    json_body = { "nazwisko": new_last_name}
     update_resp = requests.patch(URL + f"/api/accounts/{pesel}", json = json_body)
     assert_equal(update_resp.status_code, 200)
 
@@ -63,5 +63,5 @@ def update_nazwisko(context, new_last_name, pesel):
 def verify_nazwisko(context, pesel, nazwisko):
     response = requests.get(URL + f"/api/accounts/{pesel}")
     assert_equal(response.status_code, 200)
-    assert_equal(response.json()["nazwisko"], nazwisko.strip('"'))
+    assert_equal(response.json()["nazwisko"], nazwisko)
 
